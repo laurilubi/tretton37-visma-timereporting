@@ -6,9 +6,10 @@ var adapt = require('ugly-adapter');
 
 var readFile = adapt.part(fs.readFile); // promise shim
 
+var port = process.env.PORT || 8000;
 var proxy = hoxy.createServer({
   reverse: "https://px3.afdrift.se"
-}).listen(8000);
+}).listen(port);
 
 proxy.intercept('request', (req, resp) => {
   var x = req;
