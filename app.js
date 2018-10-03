@@ -1,41 +1,108 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const clientUsesHttps = false;
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var hoxy = require("hoxy");
+var fs = require('fs');
+var adapt = require('ugly-adapter');
 
-var app = express();
+var readFile = adapt.part(fs.readFile); // promise shim
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+var port = process.env.PORT || 8000;
+var proxy = hoxy.createServer({
+  reverse: "https://px3.afdrift.se"
+}).listen(port);
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+proxy.intercept('request', (req, resp) => {
+  var x = req;
+  //req.headers['accept-encoding'] = 'utf-8';
+  // server will now see the "x-unicorns" header
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// encoding
+// <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+// proxy.intercept({
+// phase: 'response',
+// mimeType: 'text/html',
+// as: '$'
+// }, function(req, resp) {
+// resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
+// });
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// non-secure cookies
+proxy.intercept('response', (req, resp) => {
+  if (clientUsesHttps) return;
+  makeCookiesNonSecure(resp.headers["set-cookie"]);
 });
 
-module.exports = app;
+// inject tretton37 CSS and JS
+proxy.intercept({
+  phase: 'response',
+  mimeType: 'text/html',
+  as: '$'
+}, (req, resp) => {
+  resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
+  resp.$('title').text('Unicorns!');
+
+  // console.log('bla');
+  // var cssLink = $('<link/>').attr({
+  // rel: "stylesheet",
+  // type:"text/css",
+  // href:"../tretton37-2.css"});
+
+  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/tretton37-common.css' />");
+  resp.$("head").append("<script type='text/javascript' src='/tretton37-common.js' />");
+
+  var pageId = getNormalizedUrl(req.url);
+  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/tretton37" + pageId + ".css' />");
+  resp.$("head").append("<script type='text/javascript' src='/tretton37" + pageId + ".js' />");
+});
+
+// serve tretton37 CSS and JS content
+proxy.intercept({
+  phase: 'request',
+  url: '/tretton37*.*'
+}, (req, resp) => {
+  console.log(req.url);
+
+  //req.headers["content-type"] = resp.headers["content-type"] = ""; // avoid 
+  try {
+    var contents = fs.readFileSync("." + req.url, "utf8");
+    resp.statusCode = 200;
+    resp.string = contents;
+  } catch (ex) {
+    console.log("File " + req.url + " not found");
+    resp.statusCode = 404;
+    resp.string = "";
+  }
+
+  // readFile('./tretton37.css', 'utf8')
+  // .then(function(header) {
+  // console.log('tretton37.css B');
+  // resp.string =header;
+
+  // });
+  // return readFile('./header.html', 'utf8')
+  // 
+  // 
+});
+
+// proxy.intercept({
+//   phase: 'request',
+//   url: 'tretton37*.js'
+// }, (req, resp) => {
+//   console.log('tretton37.js');
+//   var js = fs.readFileSync('tretton37.js', 'utf8');
+//   resp.statusCode = 200;
+//   resp.string = js;
+// });
+
+function makeCookiesNonSecure(cookies) {
+  if (cookies == null) return;
+  for (var index = 0; index < cookies.length; index++) {
+    cookies[index] = cookies[index].replace("secure; ", "");
+  }
+}
+
+function getNormalizedUrl(url) {
+  var normalizedUrl = url.replace(/[^a-z\d]/gi, "-");
+  return normalizedUrl;
+}
