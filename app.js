@@ -1,4 +1,5 @@
 console.log('step a');
+console.log("Process version: " + process.version);
 const clientUsesHttps = false;
 
 var hoxy = require("hoxy");
