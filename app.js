@@ -15,7 +15,7 @@ var proxy = hoxy.createServer({
 }).listen(port);
 console.log('step d');
 
-proxy.intercept('request', (req, resp) => {
+proxy.intercept('request', function (req, resp) {
   var x = req;
   //req.headers['accept-encoding'] = 'utf-8';
   // server will now see the "x-unicorns" header
@@ -32,7 +32,7 @@ proxy.intercept('request', (req, resp) => {
 // });
 
 // non-secure cookies
-proxy.intercept('response', (req, resp) => {
+proxy.intercept('response', function(req, resp) {
   if (clientUsesHttps) return;
   makeCookiesNonSecure(resp.headers["set-cookie"]);
 });
@@ -42,7 +42,7 @@ proxy.intercept({
   phase: 'response',
   mimeType: 'text/html',
   as: '$'
-}, (req, resp) => {
+}, function(req, resp)  {
   resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
   resp.$('title').text('Unicorns!');
 
@@ -64,7 +64,7 @@ proxy.intercept({
 proxy.intercept({
   phase: 'request',
   url: '/tretton37*.*'
-}, (req, resp) => {
+}, function(req, resp)  {
   console.log(req.url);
 
   //req.headers["content-type"] = resp.headers["content-type"] = ""; // avoid 
