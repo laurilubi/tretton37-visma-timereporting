@@ -6,6 +6,8 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "hoxy": "~3.3.1"
+    "hoxy": "~3.3.1",
+	"fs", "0.0.1",
+	"ugly-adapter", "~1.3.1"
   }
 }
