@@ -1,15 +1,19 @@
+console.log('step a');
 const clientUsesHttps = false;
 
 var hoxy = require("hoxy");
 var fs = require('fs');
 var adapt = require('ugly-adapter');
+console.log('step b');
 
 var readFile = adapt.part(fs.readFile); // promise shim
 
 var port = process.env.PORT || 8000;
+console.log('step c ' +port);
 var proxy = hoxy.createServer({
   reverse: "https://px3.afdrift.se"
 }).listen(port);
+console.log('step d');
 
 proxy.intercept('request', (req, resp) => {
   var x = req;
@@ -106,3 +110,5 @@ function getNormalizedUrl(url) {
   var normalizedUrl = url.replace(/[^a-z\d]/gi, "-");
   return normalizedUrl;
 }
+
+console.log('step e');
