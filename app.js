@@ -1,26 +1,27 @@
-console.log('step a');
-console.log("Process version: " + process.version);
-const clientUsesHttps = false;
+const clientUsesHttps = process.env.CLIENT_USES_HTTPS || false;
+const defaultCustomization = process.env.DEFAULT_CUSTOMIZATION || "tretton37";
+const port = process.env.PORT || 8000;
+
+console.log("Node process version: " + process.version);
+console.log("clientUsesHttps: " + clientUsesHttps);
+console.log("defaultCustomization: " + defaultCustomization);
+console.log("Internal port: " + port);
 
 var hoxy = require("hoxy");
 var fs = require('fs');
 var adapt = require('ugly-adapter');
-console.log('step b');
 
 var readFile = adapt.part(fs.readFile); // promise shim
 
-var port = process.env.PORT || 8000;
-console.log('step c ' +port);
 var proxy = hoxy.createServer({
   reverse: "https://px3.afdrift.se"
 }).listen(port);
-console.log('step d');
 
-proxy.intercept('request', function (req, resp) {
-  var x = req;
-  //req.headers['accept-encoding'] = 'utf-8';
-  // server will now see the "x-unicorns" header
-});
+//proxy.intercept('request', function (req, resp) {
+//var x = req;
+//req.headers['accept-encoding'] = 'utf-8';
+// server will now see the "x-unicorns" header
+//});
 
 // encoding
 // <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
@@ -33,7 +34,7 @@ proxy.intercept('request', function (req, resp) {
 // });
 
 // non-secure cookies
-proxy.intercept('response', function(req, resp) {
+proxy.intercept('response', function (req, resp) {
   if (clientUsesHttps) return;
   makeCookiesNonSecure(resp.headers["set-cookie"]);
 });
@@ -43,9 +44,9 @@ proxy.intercept({
   phase: 'response',
   mimeType: 'text/html',
   as: '$'
-}, function(req, resp)  {
-  resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
-  resp.$('title').text('Unicorns!');
+}, function (req, resp) {
+  //resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
+  //resp.$('title').text('Unicorns!'); TODO put into js
 
   // console.log('bla');
   // var cssLink = $('<link/>').attr({
@@ -53,31 +54,41 @@ proxy.intercept({
   // type:"text/css",
   // href:"../tretton37-2.css"});
 
-  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/tretton37-common.css' />");
-  resp.$("head").append("<script type='text/javascript' src='/tretton37-common.js' />");
+  var customization = getCustomization(req);
+  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />");
+  resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/_common.js' />");
 
   var pageId = getNormalizedUrl(req.url);
-  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/tretton37" + pageId + ".css' />");
-  resp.$("head").append("<script type='text/javascript' src='/tretton37" + pageId + ".js' />");
+  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/" + pageId + ".css' />");
+  resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/" + pageId + ".js' />");
 });
 
 // serve tretton37 CSS and JS content
 proxy.intercept({
   phase: 'request',
-  url: '/tretton37*.*'
-}, function(req, resp)  {
+  url: '/customization/*'
+}, function (req, resp) {
   console.log(req.url);
 
   //req.headers["content-type"] = resp.headers["content-type"] = ""; // avoid 
-  try {
-    var contents = fs.readFileSync("." + req.url, "utf8");
-    resp.statusCode = 200;
-    resp.string = contents;
-  } catch (ex) {
+  var filePath = "." + req.url; // TODO sanitize?
+  if (fs.existsSync(filePath) == false) { // TODO enable
     console.log("File " + req.url + " not found");
     resp.statusCode = 404;
     resp.string = "";
+    return;
   }
+
+  //try {
+  var contents = fs.readFileSync(filePath, "utf8");
+  resp.statusCode = 200;
+  resp.string = contents;
+  // } catch (ex) {
+  //   // TODO remove
+  //   console.log("File " + req.url + " not found");
+  //   resp.statusCode = 404;
+  //   resp.string = "";
+  // }
 
   // readFile('./tretton37.css', 'utf8')
   // .then(function(header) {
@@ -89,16 +100,6 @@ proxy.intercept({
   // 
   // 
 });
-
-// proxy.intercept({
-//   phase: 'request',
-//   url: 'tretton37*.js'
-// }, (req, resp) => {
-//   console.log('tretton37.js');
-//   var js = fs.readFileSync('tretton37.js', 'utf8');
-//   resp.statusCode = 200;
-//   resp.string = js;
-// });
 
 function makeCookiesNonSecure(cookies) {
   if (cookies == null) return;
@@ -112,4 +113,15 @@ function getNormalizedUrl(url) {
   return normalizedUrl;
 }
 
-console.log('step e');
+function getCustomization(req) {
+  const prefix = "_customization=";
+  var cookieString = req.headers.cookie;
+  var cookies = cookieString.split("; ");
+  var customizationCookies = cookies.filter(function (_) { return _.startsWith(prefix) });
+  if (customizationCookies.length == 0) return defaultCustomization;
+
+  var cookieValue = customizationCookies[0].substr(prefix.length);
+  if (cookieValue == "") return defaultCustomization;
+
+  return cookieValue;
+}
