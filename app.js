@@ -54,6 +54,8 @@ proxy.intercept({
   // type:"text/css",
   // href:"../tretton37-2.css"});
 
+  resp.$("head").append("<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js' />");
+
   var customization = getCustomization(req);
   resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />");
   resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/_common.js' />");
