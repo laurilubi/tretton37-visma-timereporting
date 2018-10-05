@@ -54,7 +54,9 @@ proxy.intercept({
   // type:"text/css",
   // href:"../tretton37-2.css"});
 
-  resp.$("head").append("<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js' />");
+  var hasAlreadyJquery = resp.$("head script[src*=jquery]").length > 0;
+  if (hasAlreadyJquery == false)
+    resp.$("head").append("<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js' />");
 
   var customization = getCustomization(req);
   resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />");
@@ -74,33 +76,16 @@ proxy.intercept({
 
   //req.headers["content-type"] = resp.headers["content-type"] = ""; // avoid 
   var filePath = "." + req.url; // TODO sanitize?
-  if (fs.existsSync(filePath) == false) { // TODO enable
+  if (fs.existsSync(filePath) == false) {
     console.log("File " + req.url + " not found");
     resp.statusCode = 404;
     resp.string = "";
     return;
   }
 
-  //try {
   var contents = fs.readFileSync(filePath, "utf8");
   resp.statusCode = 200;
   resp.string = contents;
-  // } catch (ex) {
-  //   // TODO remove
-  //   console.log("File " + req.url + " not found");
-  //   resp.statusCode = 404;
-  //   resp.string = "";
-  // }
-
-  // readFile('./tretton37.css', 'utf8')
-  // .then(function(header) {
-  // console.log('tretton37.css B');
-  // resp.string =header;
-
-  // });
-  // return readFile('./header.html', 'utf8')
-  // 
-  // 
 });
 
 function makeCookiesNonSecure(cookies) {
@@ -115,6 +100,7 @@ function getPageId(url) {
   var normalizedUrl = splits[0];
   normalizedUrl = normalizedUrl.replace(/[^a-z\d]/gi, "-");
   if (normalizedUrl.startsWith("-")) normalizedUrl = normalizedUrl.substr(1);
+  if (normalizedUrl.endsWith("-asp")) normalizedUrl = normalizedUrl.substr(0, normalizedUrl.length - 4);
   return normalizedUrl;
 }
 
