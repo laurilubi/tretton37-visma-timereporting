@@ -60,7 +60,7 @@ proxy.intercept({
   resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />");
   resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/_common.js' />");
 
-  var pageId = getNormalizedUrl(req.url);
+  var pageId = getPageId(req.url);
   resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/" + pageId + ".css' />");
   resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/" + pageId + ".js' />");
 });
@@ -110,8 +110,11 @@ function makeCookiesNonSecure(cookies) {
   }
 }
 
-function getNormalizedUrl(url) {
-  var normalizedUrl = url.replace(/[^a-z\d]/gi, "-");
+function getPageId(url) {
+  var splits = url.split("?");
+  var normalizedUrl = splits[0];
+  normalizedUrl = normalizedUrl.replace(/[^a-z\d]/gi, "-");
+  if (normalizedUrl.startsWith("-")) normalizedUrl = normalizedUrl.substr(1);
   return normalizedUrl;
 }
 
