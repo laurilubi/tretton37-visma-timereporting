@@ -17,6 +17,9 @@ var proxy = hoxy.createServer({
   reverse: "https://px3.afdrift.se"
 }).listen(port);
 
+var jqueryRgx = /<script\s[^>]*src="[^"]*jquery[^"]*"/gi;
+var headEndRgx = /<\s*\/\s*head\s*>/gi;
+
 //proxy.intercept('request', function (req, resp) {
 //var x = req;
 //req.headers['accept-encoding'] = 'utf-8';
@@ -43,28 +46,22 @@ proxy.intercept('response', function (req, resp) {
 proxy.intercept({
   phase: 'response',
   mimeType: 'text/html',
-  as: '$'
+  as: 'string' // required to avoid fixing HTML nesting errors, it might differ from how browser fix those issues
 }, function (req, resp) {
-  //resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
-  //resp.$('title').text('Unicorns!'); TODO put into js
-
-  // console.log('bla');
-  // var cssLink = $('<link/>').attr({
-  // rel: "stylesheet",
-  // type:"text/css",
-  // href:"../tretton37-2.css"});
-
-  var hasAlreadyJquery = resp.$("head script[src*=jquery]").length > 0;
+  var addition = "";
+  var hasAlreadyJquery = jqueryRgx.test(resp.string);
   if (hasAlreadyJquery == false)
-    resp.$("head").append("<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js' />");
+    addition += "<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js'></script>";
 
   var customization = getCustomization(req);
-  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />");
-  resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/_common.js' />");
+  addition += "<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />";
+  addition += "<script type='text/javascript' src='/customization/" + customization + "/_common.js'></script>";
 
   var pageId = getPageId(req.url);
-  resp.$("head").append("<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/" + pageId + ".css' />");
-  resp.$("head").append("<script type='text/javascript' src='/customization/" + customization + "/" + pageId + ".js' />");
+  addition += "<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/" + pageId + ".css' />";
+  addition += "<script type='text/javascript' src='/customization/" + customization + "/" + pageId + ".js'></script>";
+
+  resp.string = resp.string.replace(headEndRgx, addition + "</head>");
 });
 
 // serve tretton37 CSS and JS content

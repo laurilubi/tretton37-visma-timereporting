@@ -1,6 +1,10 @@
 /* best javascript */
 
-$(function () {
-    $("head title").text("Unicorn time reporting");
-    
-});
+// sometimes there is no jquery
+if ((typeof($) !== "undefined")) {
+
+    $(function () {
+        $("head title").text("Unicorn time reporting");
+
+    });
+}
