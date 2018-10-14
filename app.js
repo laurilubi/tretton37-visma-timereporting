@@ -20,22 +20,6 @@ var proxy = hoxy.createServer({
 var jqueryRgx = /<script\s[^>]*src="[^"]*jquery[^"]*"/gi;
 var headEndRgx = /<\s*\/\s*head\s*>/gi;
 
-//proxy.intercept('request', function (req, resp) {
-//var x = req;
-//req.headers['accept-encoding'] = 'utf-8';
-// server will now see the "x-unicorns" header
-//});
-
-// encoding
-// <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-// proxy.intercept({
-// phase: 'response',
-// mimeType: 'text/html',
-// as: '$'
-// }, function(req, resp) {
-// resp.$('meta[http-equiv=Content-Type]').attr("content", "text/html; charset=utf-8");
-// });
-
 // non-secure cookies
 proxy.intercept('response', function (req, resp) {
   if (clientUsesHttps) return;
@@ -71,7 +55,6 @@ proxy.intercept({
 }, function (req, resp) {
   console.log(req.url);
 
-  //req.headers["content-type"] = resp.headers["content-type"] = ""; // avoid 
   var filePath = "." + req.url; // TODO sanitize?
   if (fs.existsSync(filePath) == false) {
     console.log("File " + req.url + " not found");
