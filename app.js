@@ -18,7 +18,7 @@ var proxy = hoxy.createServer({
 }).listen(port);
 
 var jqueryRgx = /<script\s[^>]*src="[^"]*jquery[^"]*"/gi;
-var headEndRgx = /<\s*\/\s*head\s*>/gi;
+var headEndRgx = /<\s*\/\s*head\s*>/i; // only the first occurrence
 
 // non-secure cookies
 proxy.intercept('response', function (req, resp) {
