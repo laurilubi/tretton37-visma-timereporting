@@ -1,0 +1,80 @@
+body{
+    background: #002B55;
+    color: #80C565;
+}
+.header{
+    font-size: 2.5em!important;
+    text-align: right;
+}
+#layer2{
+    background: none;
+}
+
+td:nth-child(1){
+    display: none;
+}
+
+.versionnumber{
+    display: none;
+}
+
+input{
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    outline: 0;
+    border: 0px;
+    margin-top: 10px;
+    font-size: 1.5em!important;
+}
+
+#layer2{
+    background-image: none!important;
+    text-align: center;
+}
+
+.logo{
+    animation: wiggle 10s ease-in-out;
+    animation-iteration-count: infinite;
+    margin-bottom: 50px;
+}
+
+.loginBtn{
+    background: white;
+    color: black;
+    padding: 10px;
+    width: 40%;
+    float: right;
+    margin-top: 10px;
+    font-size: 1.5em!important;
+    cursor:pointer;
+    transition: 0.25s all ease;
+}
+
+.loginBtn:hover{
+    background: #E8E8E8;
+}
+
+@keyframes wiggle{
+    0%{
+        transform: rotate(0deg);
+    }
+    3%{
+        transform: rotate(1deg);
+        filter: blur(1px);
+    }
+    6%{
+        transform: rotate(-1deg);
+        filter: blur(5px);
+    }
+    9%{
+        transform: rotate(1deg);
+    }
+    12%{
+        transform: rotate(-1deg);
+    }
+    15%{
+        transform: rotate(0deg);
+        filter: blur(0px);
+    }
+}
