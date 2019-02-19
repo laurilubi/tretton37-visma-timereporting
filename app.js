@@ -142,5 +142,5 @@ function getProjectBaseUrl() {
 }
 
 function getCustomizationBaseUrl(req) {
-  return getProjectBaseUrl() + "customization/" + getCustomization(req) + "/";
+  return "/customization/" + getCustomization(req) + "/";
 }
