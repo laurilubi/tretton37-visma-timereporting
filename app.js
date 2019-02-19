@@ -5,13 +5,11 @@ const port = process.env.PORT || 8000;
 var hoxy = require("hoxy");
 var fs = require('fs');
 var adapter = require('ugly-adapter');
-var fileUrl = require('file-url');
 
 console.log("Node process version: " + process.version);
 console.log("clientUsesHttps: " + clientUsesHttps);
 console.log("defaultCustomization: " + defaultCustomization);
 console.log("Internal port: " + port);
-console.log("Project base url: " + getProjectBaseUrl());
 
 var readFile = adapter.part(fs.readFile); // promise shim
 
@@ -131,14 +129,6 @@ function getCustomization(req) {
   if (cookieValue == "") return defaultCustomization;
 
   return cookieValue;
-}
-
-function getProjectBaseUrl() {
-  if (port != 8000) { // TODO should be based on env variable
-    return "https://raw.githubusercontent.com/laurilubi/tretton37-visma-timereporting/master/";
-  }
-
-  return fileUrl("./") + "/";
 }
 
 function getCustomizationBaseUrl(req) {
