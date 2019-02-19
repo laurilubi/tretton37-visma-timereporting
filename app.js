@@ -60,7 +60,7 @@ proxy.intercept({
 }, function (req, resp) {
   console.log(req.url);
 
-  var filePath = "." + req.url; // TODO sanitize?
+  var filePath = getValidFilePath(req.url);
   if (fs.existsSync(filePath) == false) {
     console.log("File " + req.url + " not found");
     resp.statusCode = 404;
@@ -77,6 +77,32 @@ proxy.intercept({
 
   resp.string = contents;
 });
+
+proxy.intercept({
+  phase: 'response',
+  as: 'string',
+  url: '/customization/*/images/*'
+}, function (req, resp) {
+  console.log(req.url);
+
+  var filePath = getValidFilePath(req.url);
+  if (fs.existsSync(filePath) == false) {
+    console.log("Image " + req.url + " not found");
+    resp.statusCode = 404;
+    resp.string = "";
+    return;
+  }
+
+  var contents = fs.readFileSync(filePath);
+  resp.statusCode = 200;
+  resp.headers["content-type"] = "image/png"; // TODO correct extension
+  resp.string = contents;
+});
+
+function getValidFilePath(url) {
+  // TODO sanitize?
+  return "." + url;
+}
 
 function makeCookiesNonSecure(cookies) {
   if (cookies == null) return;
