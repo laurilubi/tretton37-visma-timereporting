@@ -21,7 +21,7 @@ var proxy = hoxy.createServer({
 
 var jqueryRgx = /<script\s[^>]*src="[^"]*jquery[^"]*"/gi;
 var headEndRgx = /<\s*\/\s*head\s*>/i; // only the first occurrence
-var imageBaseUrlRgx = /\{\{imageBaseUrl\}\}/gi;
+var customizationBaseUrlRgx = /\{\{customizationBaseUrl\}\}/gi;
 
 // non-secure cookies
 proxy.intercept('response', function (req, resp) {
@@ -72,7 +72,7 @@ proxy.intercept({
   resp.statusCode = 200;
 
   if (filePath == "./customization/helper.js") {
-    contents = contents.replace(imageBaseUrlRgx, getImageBaseUrl(req));
+    contents = contents.replace(customizationBaseUrlRgx, getCustomizationBaseUrl(req));
   }
 
   resp.string = contents;
@@ -141,6 +141,6 @@ function getProjectBaseUrl() {
   return fileUrl("./") + "/";
 }
 
-function getImageBaseUrl(req) {
+function getCustomizationBaseUrl(req) {
   return getProjectBaseUrl() + "customization/" + getCustomization(req) + "/";
 }
