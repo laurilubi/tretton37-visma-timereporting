@@ -78,11 +78,11 @@ proxy.intercept({
   resp.string = contents;
 });
 
-proxy.intercept({
-  phase: 'response',
-  as: 'string',
-  url: '/customization/*/images/*'
-}, function (req, resp) {
+proxy.intercept({ phase: 'response', as: 'string', url: '/customization/*.png' }, function (req, resp) { serveBinary(req, resp, "image/png"); });
+proxy.intercept({ phase: 'response', as: 'string', url: '/customization/*.gif' }, function (req, resp) { serveBinary(req, resp, "image/gif"); });
+proxy.intercept({ phase: 'response', as: 'string', url: '/customization/*.jpg' }, function (req, resp) { serveBinary(req, resp, "image/jpeg"); });
+
+function serveBinary(req, resp, contentType) {
   console.log(req.url);
 
   var filePath = getValidFilePath(req.url);
@@ -97,7 +97,7 @@ proxy.intercept({
   resp.statusCode = 200;
   resp.headers["content-type"] = "image/png"; // TODO correct extension
   resp.string = contents;
-});
+}
 
 function getValidFilePath(url) {
   // TODO sanitize?
