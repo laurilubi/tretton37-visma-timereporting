@@ -2,16 +2,18 @@ const clientUsesHttps = process.env.CLIENT_USES_HTTPS || false;
 const defaultCustomization = process.env.DEFAULT_CUSTOMIZATION || "tretton37";
 const port = process.env.PORT || 8000;
 
+var hoxy = require("hoxy");
+var fs = require('fs');
+var adapter = require('ugly-adapter');
+var fileUrl = require('file-url');
+
 console.log("Node process version: " + process.version);
 console.log("clientUsesHttps: " + clientUsesHttps);
 console.log("defaultCustomization: " + defaultCustomization);
 console.log("Internal port: " + port);
+console.log("Project base url: " + getProjectBaseUrl());
 
-var hoxy = require("hoxy");
-var fs = require('fs');
-var adapt = require('ugly-adapter');
-
-var readFile = adapt.part(fs.readFile); // promise shim
+var readFile = adapter.part(fs.readFile); // promise shim
 
 var proxy = hoxy.createServer({
   reverse: "https://px3.afdrift.se"
@@ -19,6 +21,7 @@ var proxy = hoxy.createServer({
 
 var jqueryRgx = /<script\s[^>]*src="[^"]*jquery[^"]*"/gi;
 var headEndRgx = /<\s*\/\s*head\s*>/i; // only the first occurrence
+var imageBaseUrlRgx = /\{\{imageBaseUrl\}\}/gi;
 
 // non-secure cookies
 proxy.intercept('response', function (req, resp) {
@@ -36,6 +39,8 @@ proxy.intercept({
   var hasAlreadyJquery = jqueryRgx.test(resp.string);
   if (hasAlreadyJquery == false)
     addition += "<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js'></script>";
+
+  addition += "<script type='text/javascript' src='/customization/helper.js'></script>";
 
   var customization = getCustomization(req);
   addition += "<link rel='stylesheet' type='text/css' href='/customization/" + customization + "/_common.css' />";
@@ -65,6 +70,11 @@ proxy.intercept({
 
   var contents = fs.readFileSync(filePath, "utf8");
   resp.statusCode = 200;
+
+  if (filePath == "./customization/helper.js") {
+    contents = contents.replace(imageBaseUrlRgx, getImageBaseUrl(req));
+  }
+
   resp.string = contents;
 });
 
@@ -95,4 +105,16 @@ function getCustomization(req) {
   if (cookieValue == "") return defaultCustomization;
 
   return cookieValue;
+}
+
+function getProjectBaseUrl() {
+  if (port != 8000) { // TODO should be based on env variable
+    return "https://raw.githubusercontent.com/laurilubi/tretton37-visma-timereporting/master/";
+  }
+
+  return fileUrl("./") + "/";
+}
+
+function getImageBaseUrl(req) {
+  return getProjectBaseUrl() + "customization/" + getCustomization(req) + "/";
 }
