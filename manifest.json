@@ -1,0 +1,51 @@
+{
+    "name": "Tretton37 Visma theme",
+    "version": "1.0",
+    "description": "Build an Extension!",
+    "permissions": [
+        "tabs",
+        "notifications",
+        "http://*/*",
+        "https://*/*",
+        "activeTab",
+        "declarativeContent",
+        "storage"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "options_page": "options.html",
+    "page_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/favicon.png",
+            "32": "images/favicon.png",
+            "48": "images/favicon.png",
+            "128": "images/favicon.png"
+        }
+    },
+    "icons": {
+        "16": "images/favicon.png",
+        "32": "images/favicon.png",
+        "48": "images/favicon.png",
+        "128": "images/favicon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://px3.afdrift.se/*"
+            ],
+            "js": [
+                "contentScript.js"
+            ],
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        "customization/*"
+    ],
+    "manifest_version": 2
+}
