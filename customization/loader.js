@@ -1,32 +1,51 @@
 'use strict';
 
-let baseUrl = getExtensionBaseUrl();
-if (getHead() == null) {
-  console.log('head=null - skipping');
+main();
 
-} else {
-  let hasAlreadyJquery = !!window.$;
-  console.log('hasAlreadyJquery=' + hasAlreadyJquery);
+function main() {
+  if (handleRedirects() == false) return;
+  pageInjection();
+}
 
-  if (hasAlreadyJquery === false) {
-    addScript("customization/jquery-3.4.1.min.js", inject);
-    // addScript("https://code.jquery.com/jquery-3.3.1.min.js");
-    // jQuery.noConflict();
+function handleRedirects() {
+  if (document.location.href.indexOf("http://pxcontrol1337.afdrift.se/") >= 0) {
+    document.location = "https://pxcontrol1337.afdrift.se/";
+    return false;
+  } else if (document.location.href.indexOf("://px3.afdrift.se/") >= 0) {
+    document.location = "https://pxcontrol1337.afdrift.se/";
+    return false;
+  }
+  return true;
+}
+
+function pageInjection() {
+  if (getHead() == null) {
+    console.log('head=null - skipping');
+
   } else {
-    inject();
+    let hasAlreadyJquery = !!window.$;
+    console.log('hasAlreadyJquery=' + hasAlreadyJquery);
+
+    if (hasAlreadyJquery === false) {
+      addScript("customization/jquery-3.4.1.min.js", getExtensionBaseUrl(), inject);
+      // addScript("https://code.jquery.com/jquery-3.3.1.min.js");
+      // jQuery.noConflict();
+    } else {
+      inject();
+    }
   }
 }
 
-
-
 function inject() {
+  let baseUrl = getExtensionBaseUrl();
+
   var customization = getCustomization();
-  addCss("customization/" + customization + "/_common.css");
-  addScript("customization/" + customization + "/_common.js");
+  addCss("customization/" + customization + "/_common.css", baseUrl);
+  addScript("customization/" + customization + "/_common.js", baseUrl);
 
   var pageId = getPageId(location.pathname);
-  addCss("customization/" + customization + "/" + pageId + ".css");
-  addScript("customization/" + customization + "/" + pageId + ".js");
+  addCss("customization/" + customization + "/" + pageId + ".css", baseUrl);
+  addScript("customization/" + customization + "/" + pageId + ".js", baseUrl);
 }
 
 function getCustomization() {
@@ -47,7 +66,7 @@ function getExtensionBaseUrl() {
   return html.getAttribute("extensionBaseUrl");
 }
 
-function addScript(url, callback) {
+function addScript(url, baseUrl, callback) {
   var head = getHead();
   if (head == null) return false;
 
@@ -62,7 +81,7 @@ function addScript(url, callback) {
   return true;
 }
 
-function addCss(url, callback) {
+function addCss(url, baseUrl, callback) {
   var head = getHead();
   if (head == null) return false;
 

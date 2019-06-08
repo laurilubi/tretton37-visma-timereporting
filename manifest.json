@@ -1,12 +1,14 @@
 {
     "name": "Tretton37 Visma theme",
     "version": "1.0",
-    "description": "Build an Extension!",
+    "description": "Chrome extension to get user-friendly Visma Time reporting experience.",
     "permissions": [
         "tabs",
         "notifications",
-        "http://*/*",
-        "https://*/*",
+        "http://pxcontrol1337.afdrift.se/*",
+        "https://pxcontrol1337.afdrift.se/*",
+        "http://px3.afdrift.se/*",
+        "https://px3.afdrift.se/*",
         "activeTab",
         "declarativeContent",
         "storage"
@@ -36,6 +38,9 @@
     "content_scripts": [
         {
             "matches": [
+                "http://pxcontrol1337.afdrift.se/*",
+                "https://pxcontrol1337.afdrift.se/*",
+                "http://px3.afdrift.se/*",
                 "https://px3.afdrift.se/*"
             ],
             "js": [
