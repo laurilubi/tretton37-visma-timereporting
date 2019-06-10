@@ -1,10 +1,11 @@
 module.exports = {
   entry: {
-    'login-login': './src/login/index.js'
+    'login-login': './src/login/index.js',
+    'reportbase-framesetreport': './src/reportbase/index.js',
   },
   output: {
     filename: '[name].js',
-    path: __dirname
+    path: __dirname,
   },
   module: {
     rules: [
@@ -12,9 +13,9 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
-        }
-      }
-    ]
-  }
+          loader: 'babel-loader',
+        },
+      },
+    ],
+  },
 };
