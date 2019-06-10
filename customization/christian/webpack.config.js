@@ -1,4 +1,11 @@
 module.exports = {
+  entry: {
+    'login-login': './src/login/index.js'
+  },
+  output: {
+    filename: '[name].js',
+    path: __dirname
+  },
   module: {
     rules: [
       {

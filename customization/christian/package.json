@@ -5,8 +5,8 @@
   "main": "_common.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode=production -o _common.js",
-    "watch": "webpack --mode=production -o _common.js -w"
+    "build": "webpack --mode=production",
+    "watch": "webpack --mode=production -w"
   },
   "author": "Christian Söderberg",
   "license": "ISC",
@@ -35,6 +35,7 @@
     ]
   },
   "dependencies": {
+    "polished": "^3.4.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "styled-components": "^4.1.3"
