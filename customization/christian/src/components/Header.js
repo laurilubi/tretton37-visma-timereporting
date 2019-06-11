@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 
+import Logo from './Logo';
+
 const headerHeight = '4rem';
 
 const Wrapper = styled.header`
@@ -18,11 +20,11 @@ const Wrapper = styled.header`
     justify-content: space-between;
     min-height: ${headerHeight};
   `}
-`;
 
-const Logo = styled.img`
-  max-height: 2rem;
-  margin: 1rem auto 1rem 1rem;
+  & > div {
+    max-height: 2rem;
+    margin: 1rem auto 1rem 1rem;
+  }
 `;
 
 const HeaderButton = styled.button`
@@ -56,7 +58,7 @@ function Header({ user }) {
   }
   return (
     <Wrapper>
-      <Logo src="https://1337works.com/images/_tretton37_logo_green.png" alt="tretton37" />
+      <Logo />
 
       <NavItem dangerouslySetInnerHTML={{ __html: user }} />
       <HeaderButton type="button" onClick={logout}>

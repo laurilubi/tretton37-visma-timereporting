@@ -2,25 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import { green } from '../colors';
 
-const LoginLogoWrapper = styled.div`
+const Wrapper = styled.div`
   position: relative;
+  max-height: 100%;
   color: ${green};
-  margin-bottom: 2rem;
   & > span {
-    font-size: 0.8em;
+    font-size: 0.6em;
+    font-weight: normal;
     position: absolute;
-    top: -10px;
+    top: -1em;
     right: 0;
   }
 `;
 
-function LoginLogo() {
+function Logo() {
   return (
-    <LoginLogoWrapper>
+    <Wrapper>
       <span>Time reporting</span>
       <img src="https://1337works.com/images/_tretton37_logo_green.png" alt="tretton37" />
-    </LoginLogoWrapper>
+    </Wrapper>
   );
 }
 
-export default LoginLogo;
+export default Logo;
