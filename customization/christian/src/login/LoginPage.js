@@ -6,6 +6,7 @@ import Logo from '../components/Logo';
 import Button from '../components/Button';
 import Form from '../components/Form';
 import Input from '../components/Input';
+import Theme from '../components/Theme';
 
 const SERVER = 'px';
 const DATABASE = 'tretton37';
@@ -28,33 +29,37 @@ function LoginPage() {
   }, []);
 
   return (
-    <LoginWrapper>
-      <Form action="check_login.asp" method="POST" name="formLogin">
-        <h2>
-          <Logo />
-        </h2>
-        <Input
-          type="text"
-          id="username"
-          name="username"
-          placeholder="Ninja ID"
-          ref={iRef}
-          required
-        />
-        <Input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Secret password"
-          required
-        />
-        <Input type="hidden" id="server" name="server" value={SERVER} />
-        <Input type="hidden" id="database" name="database" value={DATABASE} />
-        <Input type="hidden" id="selectLanguage" name="selectLanguage" value={LANGUAGE} />
-        <Input type="hidden" id="hdnsettings" name="hdnsettings" value="100,0" />
-        <Button type="submit">Log in</Button>
-      </Form>
-    </LoginWrapper>
+    <Theme>
+      <LoginWrapper>
+        <Form action="check_login.asp" method="POST" name="formLogin">
+          <h2>
+            <Logo />
+          </h2>
+          <Input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Ninja ID"
+            ref={iRef}
+            required
+          />
+          <Input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Secret password"
+            required
+          />
+          <Input type="hidden" id="server" name="server" value={SERVER} />
+          <Input type="hidden" id="database" name="database" value={DATABASE} />
+          <Input type="hidden" id="selectLanguage" name="selectLanguage" value={LANGUAGE} />
+          <Input type="hidden" id="hdnsettings" name="hdnsettings" value="100,0" />
+          <Button primary type="submit">
+            Log in
+          </Button>
+        </Form>
+      </LoginWrapper>
+    </Theme>
   );
 }
 

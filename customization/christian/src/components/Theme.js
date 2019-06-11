@@ -9,6 +9,7 @@ const Theme = ({ children }) => (
       primaryColor: COLORS.primary,
       secondaryColor: COLORS.secondary,
       blackColor: COLORS.black,
+      fullWhiteColor: COLORS.fullWhite,
       whiteColor: COLORS.white,
       grayColor: COLORS.gray,
       lightGrayColor: COLORS.lightGray,
