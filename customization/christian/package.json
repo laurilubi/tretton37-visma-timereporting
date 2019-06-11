@@ -39,6 +39,7 @@
     "polished": "^3.4.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-hooks-fetch": "^0.10.0",
     "styled-components": "^4.1.3"
   }
 }
