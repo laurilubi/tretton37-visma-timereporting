@@ -6,6 +6,7 @@ const Wrapper = styled.div`
   position: relative;
   max-height: 100%;
   color: ${green};
+
   & > span {
     font-size: 0.6em;
     font-weight: normal;
