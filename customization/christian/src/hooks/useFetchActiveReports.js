@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import getHtml from '../utils/getHtml';
 
-function useFetchStartpage() {
+function useFetchActiveReports() {
   const [options, setOptions] = useState([]);
 
   async function fetchActiveReports() {
@@ -35,4 +35,4 @@ function useFetchStartpage() {
   return options;
 }
 
-export default useFetchStartpage;
+export default useFetchActiveReports;

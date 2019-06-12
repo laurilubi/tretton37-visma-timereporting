@@ -1,20 +1,16 @@
 import React, { Fragment } from 'react';
-import styled from 'styled-components';
 
 import Header from '../components/Header';
+import Main from '../components/Main';
 import Card, { CardTitle, CardContent, CardActions } from '../components/Card';
 import Theme from '../components/Theme';
 import ReportList from './ReportList';
 import { LinkButton } from '../components/Button';
 
-import useFetchStartpage from '../hooks/useFetchStartpage';
-
-const Main = styled.main`
-  padding: 3rem 1rem;
-`;
+import useFetchActiveReports from '../hooks/useFetchActiveReports';
 
 function App() {
-  const options = useFetchStartpage();
+  const options = useFetchActiveReports();
 
   return (
     <Theme>
