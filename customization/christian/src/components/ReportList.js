@@ -31,7 +31,7 @@ function ReportList({ options = [] }) {
   return (
     <List>
       {options.map(option => (
-        <ReportListItem option={option} key={option.title}></ReportListItem>
+        <ReportListItem option={option} key={option.title} />
       ))}
     </List>
   );

@@ -1,7 +1,8 @@
 module.exports = {
   entry: {
     'login-login': './src/login/index.js',
-    'reportbase-framesetreport': './src/reportbase/index.js',
+    // 'reportbase-framesetreport': './src/reportbase/index.js',
+    'timebase-frameset': './src/timebase/index.js',
   },
   output: {
     filename: '[name].js',
