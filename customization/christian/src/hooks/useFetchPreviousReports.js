@@ -18,6 +18,7 @@ function useFetchActiveReports() {
       return {
         url: `/timebase/frameset.asp?${opt.value}`,
         title: `${yearWeek}-${letter}`,
+        dates: null,
         status: opt.textContent.replace(`${yearWeek}-${letter}`, '').trim(),
         created: createdData,
       };

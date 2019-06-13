@@ -1,4 +1,4 @@
-import LoginPage from './LoginPage';
 import initPage from '../initPage';
+import LoginPage from './LoginPage';
 
-initPage(LoginPage);
+(() => initPage(LoginPage))();
