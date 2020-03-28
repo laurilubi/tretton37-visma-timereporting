@@ -6,7 +6,8 @@ $(function () {
     $('#password').remove();
     $('.login').append("<div class='header'>Time reporting</div>");
 
-    $('.login').append("<img class='logo' src='https://1337works.com/images/_tretton37_logo_green.png' width='100%'>");
+    const logoUrl = url('images/tretton37-logo-green.png');
+    $('.login').append(`<img class='logo' src='${logoUrl}' width='100%'>`);
     $('.login').append("<input type='text' id='username' name='username' placeholder='Ninja id'>");
     $('.login').append("<input type='password' id='password' name='password' placeholder='Secret password'>");
     $('.login').append("<div class='loginBtn' onclick='javascript:SubmitForm()'>Login</div>");

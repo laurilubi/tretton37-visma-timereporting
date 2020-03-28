@@ -111,6 +111,8 @@ new Extension().execute();
 // Returns the full url, based on the active customization
 // relativeUrl is relative to /customization/*, eg /customization/tretton37
 function url(relativeUrl) {
-  // TODO
-  return chrome.runtime.getURL("/customization/tretton37/" + relativeUrl);
+  // TODO customization selection
+  var html = document.getElementsByTagName("html")[0];
+  const baseUrl = html.getAttribute("extensionBaseUrl");
+  return `${baseUrl}customization/tretton37/${relativeUrl}`;
 }
