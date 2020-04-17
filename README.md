@@ -1,5 +1,5 @@
 # tretton37-visma-timereporting
-Chrome extension to get user-friendly Visma Time reporting experience.
+Chrome extension to get user-friendly Visma Time reporting experience. Chrome extensions now work in other browser too, eg Firefox.
 
 # install
 `TODO` Non-developer version will be put it into Chrome Web Store.
