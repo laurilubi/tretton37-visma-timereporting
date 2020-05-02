@@ -14,8 +14,7 @@ chrome.runtime.onInstalled.addListener(function () {
     chrome.declarativeContent.onPageChanged.addRules([{
       conditions: [new chrome.declarativeContent.PageStateMatcher({
         pageUrl: { hostEquals: 'px3.afdrift.se' },
-      })
-      ],
+      })],
       actions: [new chrome.declarativeContent.ShowPageAction()]
     }]);
   });
@@ -26,12 +25,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     chrome.tabs.executeScript(sender.tab.id, { file: message.filename }, function () {
       sendResponse({ done: true });
     });
-    return true; // Required for async sendResponse()
+    return true; // required for async sendResponse()
   }
   if (message.insertCSS) {
     chrome.tabs.insertCSS(sender.tab.id, { file: message.filename }, function () {
       sendResponse({ done: true });
     });
-    return true; // Required for async sendResponse()
+    return true; // required for async sendResponse()
   }
 });
