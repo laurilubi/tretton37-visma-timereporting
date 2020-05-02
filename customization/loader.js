@@ -1,9 +1,12 @@
 'use strict';
 
+const html = document.getElementsByTagName('html')[0];
+const config = JSON.parse(html.getAttribute("extensionConfig"));
+
 var Extension = function () {
-  var self = this;
-  var baseUrl;
-  var head;
+  let self = this;
+  let baseUrl;
+  let head;
 
   this.execute = function () {
     if (handleRedirects() == false) return;
@@ -43,17 +46,12 @@ var Extension = function () {
   }
 
   var inject = function () {
-    var customization = getCustomization();
-    addCss("customization/" + customization + "/_common.css");
-    addScript("customization/" + customization + "/_common.js");
+    addCss(`customization/${config.customization}/_common.css`);
+    addScript(`customization/${config.customization}/_common.js`);
 
     var pageId = getPageId(location.pathname);
-    addCss("customization/" + customization + "/" + pageId + ".css");
-    addScript("customization/" + customization + "/" + pageId + ".js");
-  }
-
-  var getCustomization = function () {
-    return "tretton37"; // TODO
+    addCss(`customization/${config.customization}/${pageId}.css`);
+    addScript(`customization/${config.customization}/${pageId}.js`);
   }
 
   var getPageId = function (url) {
@@ -111,8 +109,7 @@ new Extension().execute();
 // Returns the full url, based on the active customization
 // relativeUrl is relative to /customization/*, eg /customization/tretton37
 function url(relativeUrl) {
-  // TODO customization selection
   var html = document.getElementsByTagName("html")[0];
   const baseUrl = html.getAttribute("extensionBaseUrl");
-  return `${baseUrl}customization/tretton37/${relativeUrl}`;
+  return `${baseUrl}customization/${config.customization}/${relativeUrl}`;
 }

@@ -2,6 +2,7 @@
 
 // alert('starting contentScript.js');
 injectExtensionBaseUrl();
+injectConfig();
 addScript(chrome.runtime.getURL("customization/loader.js"));
 
 
@@ -11,6 +12,16 @@ function injectExtensionBaseUrl() {
   var html = document.getElementsByTagName('html')[0];
   html.setAttributeNode(att);
   // document.extensionBaseUrl = chrome.runtime.getURL("/");
+}
+
+function injectConfig() {
+  getConfig()
+    .then(config => {
+      var att = document.createAttribute("extensionConfig");
+      att.value = JSON.stringify(config);
+      var html = document.getElementsByTagName('html')[0];
+      html.setAttributeNode(att);
+    });
 }
 
 function addScript(url) {
