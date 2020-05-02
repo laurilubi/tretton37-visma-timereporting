@@ -44,6 +44,7 @@
                 "https://px3.afdrift.se/*"
             ],
             "js": [
+                "config.js",
                 "contentScript.js"
             ],
             "all_frames": true
