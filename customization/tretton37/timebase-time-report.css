@@ -2,3 +2,20 @@
     padding-top: 20px;
     padding-bottom: 20px;
 }
+
+#timeTable+div {
+    margin-top: 30px;
+}
+
+#timeTable+div+div {
+    margin-bottom: 30px;
+}
+
+#timeTable+div font, #timeTable+div+div font {
+    color: #ccc;
+}
+
+#timeTable+div input, #timeTable+div+div input {
+    color: #ccc;
+    border-color: transparent;
+}
