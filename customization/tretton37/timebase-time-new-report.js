@@ -1,4 +1,3 @@
-// TODO verify that this code is actually in use
 (function ($) {
     $(() => {
         function idifyRadios() {
@@ -15,6 +14,11 @@
             });
         }
 
+        function defaultChoice() {
+            $('td input[type=radio][value=copy]').click();
+        }
+
         idifyRadios();
+        setTimeout(defaultChoice, 0);
     });
 })(jQuery);
