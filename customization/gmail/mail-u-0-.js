@@ -1,3 +1,5 @@
+// we want to inject CSS before page onload, therefore we handle loading manually
+
 let attemptCounter = 0;
 let isCssApplied = false;
 
@@ -7,11 +9,17 @@ const applyCss = function () {
     isCssApplied = true;
 }
 
+const removeCss = function () {
+    if (isCssApplied == false) return;
+    $('head link[rel=stylesheet][href$="/customization/gmail/tretton37.css"]').remove();
+    console.log('removed tretton37 CSS');
+}
+
 const detectManagedBy = function () {
     attemptCounter++;
     if (attemptCounter >= 100) {
         // TODO remove site-id from cached list
-        $('head link[rel=stylesheet][href$=/customization/gmail/tretton37.css]').remove();
+        removeCss();
         return;
     }
 
@@ -22,10 +30,20 @@ const detectManagedBy = function () {
     }
 
     const managedByText = managedBy.text();
-    if (managedByText != 'tretton37.com' && managedByText != '1337.tech') return;
+    if (managedByText != 'tretton37.com' && managedByText != '1337.tech') {
+        removeCss();
+        return;
+    }
 
+    if (isCssApplied == false) console.log('detected tretton37 account, adding CSS');
     applyCss();
     // TODO add site-id to cached list
+}
+
+const getAccountId = function () {
+    const url = document.location.href;
+    const parts = url.split('/');
+    return parseInt(parts[5]);
 }
 
 const init = function () {
@@ -37,10 +55,12 @@ const init = function () {
         return;
     }
 
-    let siteIds = [0]; // TODO
-    let siteId = 0; // TODO
-    if (siteIds.includes(siteId))
+    let accountIds = []; // TODO
+    let accountId = getAccountId();
+    if (accountIds.includes(accountId)) {
+        console.log('remembered tretton37 account, adding CSS');
         applyCss();
+    }
     detectManagedBy();
 }
 
