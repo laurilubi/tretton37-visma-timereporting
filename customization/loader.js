@@ -40,7 +40,7 @@ var Extension = function () {
       console.log('hasAlreadyJquery=' + hasAlreadyJquery);
 
       if (hasAlreadyJquery === false) {
-        addScript("customization/jquery-3.4.1.min.js", inject);
+        self.addScript("customization/jquery-3.4.1.min.js", inject);
       } else {
         inject();
       }
@@ -48,12 +48,12 @@ var Extension = function () {
   }
 
   var inject = function () {
-    addCss(`customization/${site}/_common.css`);
-    addScript(`customization/${site}/_common.js`);
+    self.addCss(`customization/${site}/_common.css`);
+    self.addScript(`customization/${site}/_common.js`);
 
     var pageId = getPageId(location.pathname);
-    addCss(`customization/${site}/${pageId}.css`);
-    addScript(`customization/${site}/${pageId}.js`);
+    self.addCss(`customization/${site}/${pageId}.css`);
+    self.addScript(`customization/${site}/${pageId}.js`);
   }
 
   var getPageId = function (url) {
@@ -70,7 +70,7 @@ var Extension = function () {
     return html.getAttribute("extensionBaseUrl");
   }
 
-  var addScript = function (url, callback) {
+  this.addScript = function (url, callback) {
     if (head == null) return false;
 
     var elm = document.createElement("script");
@@ -84,7 +84,7 @@ var Extension = function () {
     return true;
   }
 
-  var addCss = function (url, callback) {
+  this.addCss = function (url, callback) {
     if (head == null) return false;
 
     var elm = document.createElement("link");
@@ -112,8 +112,8 @@ var Extension = function () {
   }
 }
 
-
-new Extension().execute();
+let extension = new Extension();
+extension.execute();
 
 
 // Returns the full url, based on the active site
