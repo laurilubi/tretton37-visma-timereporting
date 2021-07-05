@@ -1,8 +1,5 @@
 // we want to inject CSS before page onload, therefore we handle loading manually
 
-let attemptCounter = 0;
-let isCssApplied = false;
-
 const applyCss = function () {
     if (isCssApplied) return;
     extension.addCss(`customization/gmail/tretton37.css`);
@@ -18,8 +15,8 @@ const removeCss = function () {
 const detectManagedBy = function () {
     attemptCounter++;
     if (attemptCounter >= 100) {
-        // TODO remove site-id from cached list
         removeCss();
+        rememberCurrentAccountNumber(false);
         return;
     }
 
@@ -37,13 +34,25 @@ const detectManagedBy = function () {
 
     if (isCssApplied == false) console.log('detected tretton37 account, adding CSS');
     applyCss();
-    // TODO add site-id to cached list
+    rememberCurrentAccountNumber(true);
 }
 
-const getAccountId = function () {
+const getCurrentAccountNumber = function () {
     const url = document.location.href;
     const parts = url.split('/');
     return parseInt(parts[5]);
+}
+
+const rememberCurrentAccountNumber = function (isManaged) {
+    if (isManaged) {
+        if (managedAccountNumbers.includes(currentAccountNumber)) return;
+        managedAccountNumbers.push(currentAccountNumber);
+    } else {
+        if (managedAccountNumbers.includes(currentAccountNumber) == false) return;
+        managedAccountNumbers = managedAccountNumbers.filter(value => value != currentAccountNumber);
+    }
+
+    window.localStorage.setItem('managedAccountNumbers', JSON.stringify(managedAccountNumbers));
 }
 
 const init = function () {
@@ -55,13 +64,16 @@ const init = function () {
         return;
     }
 
-    let accountIds = []; // TODO
-    let accountId = getAccountId();
-    if (accountIds.includes(accountId)) {
+    if (managedAccountNumbers.includes(currentAccountNumber)) {
         console.log('remembered tretton37 account, adding CSS');
         applyCss();
     }
+
     detectManagedBy();
 }
 
+let attemptCounter = 0;
+let isCssApplied = false;
+let managedAccountNumbers = JSON.parse(window.localStorage.getItem('managedAccountNumbers') || '[]');
+const currentAccountNumber = getCurrentAccountNumber();
 init();
