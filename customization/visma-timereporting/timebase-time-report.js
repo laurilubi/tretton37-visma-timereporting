@@ -9,7 +9,9 @@ $(function () {
         });
     });
 
-    $('#tblFormButtons').css('width', '786px');
+    let setFormButtonsWidth = () => $('#tblFormButtons').css('width', '786px');
+    $(window).resize(setFormButtonsWidth);
+    setFormButtonsWidth();
 
     $("#tblFormIcons td:has(input[name=finished])").each(function () {
         var $td = $(this);
