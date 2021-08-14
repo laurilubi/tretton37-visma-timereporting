@@ -2,6 +2,7 @@
 
 const html = document.getElementsByTagName('html')[0];
 const config = JSON.parse(html.getAttribute("extensionConfig"));
+let site;
 
 var Extension = function () {
   let self = this;
@@ -12,6 +13,7 @@ var Extension = function () {
     if (handleRedirects() == false) return;
 
     baseUrl = getExtensionBaseUrl();
+    site = getSite(document.location.href);
     head = getHead();
     conditionalInjection();
   }
@@ -38,7 +40,7 @@ var Extension = function () {
       console.log('hasAlreadyJquery=' + hasAlreadyJquery);
 
       if (hasAlreadyJquery === false) {
-        addScript("customization/jquery-3.4.1.min.js", inject);
+        self.addScript("customization/jquery-3.4.1.min.js", inject);
       } else {
         inject();
       }
@@ -46,12 +48,12 @@ var Extension = function () {
   }
 
   var inject = function () {
-    addCss(`customization/${config.customization}/_common.css`);
-    addScript(`customization/${config.customization}/_common.js`);
+    self.addCss(`customization/${site}/_common.css`);
+    self.addScript(`customization/${site}/_common.js`);
 
     var pageId = getPageId(location.pathname);
-    addCss(`customization/${config.customization}/${pageId}.css`);
-    addScript(`customization/${config.customization}/${pageId}.js`);
+    self.addCss(`customization/${site}/${pageId}.css`);
+    self.addScript(`customization/${site}/${pageId}.js`);
   }
 
   var getPageId = function (url) {
@@ -68,7 +70,7 @@ var Extension = function () {
     return html.getAttribute("extensionBaseUrl");
   }
 
-  var addScript = function (url, callback) {
+  this.addScript = function (url, callback) {
     if (head == null) return false;
 
     var elm = document.createElement("script");
@@ -82,7 +84,7 @@ var Extension = function () {
     return true;
   }
 
-  var addCss = function (url, callback) {
+  this.addCss = function (url, callback) {
     if (head == null) return false;
 
     var elm = document.createElement("link");
@@ -100,16 +102,24 @@ var Extension = function () {
     if (heads.length === 0) return null;
     return heads[0];
   }
+
+  var getSite = function (url) {
+    if (url.indexOf("https://pxcontrol1337.afdrift.se/") >= 0)
+      return "visma-timereporting";
+    if (url.indexOf("https://mail.google.com/") >= 0)
+      return "gmail";
+    throw Error(`unknown site ${url}`);
+  }
 }
 
+let extension = new Extension();
+extension.execute();
 
-new Extension().execute();
 
-
-// Returns the full url, based on the active customization
-// relativeUrl is relative to /customization/*, eg /customization/tretton37
+// Returns the full url, based on the active site
+// relativeUrl is relative to /customization/*, eg /customization/gmail
 function url(relativeUrl) {
   var html = document.getElementsByTagName("html")[0];
   const baseUrl = html.getAttribute("extensionBaseUrl");
-  return `${baseUrl}customization/${config.customization}/${relativeUrl}`;
+  return `${baseUrl}customization/${site}/${relativeUrl}`;
 }

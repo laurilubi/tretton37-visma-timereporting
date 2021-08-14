@@ -9,6 +9,7 @@
         "https://pxcontrol1337.afdrift.se/*",
         "http://px3.afdrift.se/*",
         "https://px3.afdrift.se/*",
+        "https://mail.google.com/*",
         "activeTab",
         "declarativeContent",
         "storage"
@@ -41,7 +42,8 @@
                 "http://pxcontrol1337.afdrift.se/*",
                 "https://pxcontrol1337.afdrift.se/*",
                 "http://px3.afdrift.se/*",
-                "https://px3.afdrift.se/*"
+                "https://px3.afdrift.se/*",
+                "https://mail.google.com/*"
             ],
             "js": [
                 "config.js",
