@@ -28,3 +28,13 @@ form[name=report_form] > table > tbody > tr:last-child {
     color: #ccc;
     border-color: transparent;
 }
+
+#tblFormIcons tr > td:first-child font {
+    color: #ccc;
+}
+
+#tblFormIcons tr > td:first-child input {
+    color: #ccc;
+    background-color: transparent;
+    border-color: transparent;
+}
