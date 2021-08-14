@@ -9,6 +9,8 @@ $(function () {
         });
     });
 
+    $('#tblFormButtons').css('width', '786px');
+
     $("#tblFormIcons td:has(input[name=finished])").each(function () {
         var $td = $(this);
         $td.css("padding-right", "50px");
